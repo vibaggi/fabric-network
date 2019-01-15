@@ -6,7 +6,6 @@
 
 'use strict';
 const shim = require('fabric-shim');
-const util = require('util');
 
 let Chaincode = class {
 
@@ -38,54 +37,58 @@ let Chaincode = class {
         }
     }
 
+    
+    async createCarro(stub, args) {
+        //formatando dados
+        var carro = {
+            dono: args[1],
+            placa: args[2],
+            anoDeFab: args[3],
+            cor: args[4],
+            nome: args[5]
+       }
+        
+       //insere o asset na Blockchain, mas precisa ser em formato Buffer, e 
+       //a criação está em formato JSON, assim, precisamos dar JSON.stringfy(nome_do_asset)
+       //Quando uso Buffer.from(JSON.stringify(lote)) eu estou jogando no Buffer (que é como a Blockcahin)
+       //que é como a Blockchain é estruturada
 
-    async createLote(stub, args) {
-        // retrieve existing chaincode states
-        var lote = {
-            description: args[1],
-            unit: args[2],
-            quant: args[3],
-            issuer: args[4],
-            owner: args[4]
-        }
+       //Atualizando no ledger
+        await stub.putState(args[0], Buffer.from(JSON.stringify(carro)));
 
-        await stub.putState(args[0], Buffer.from(JSON.stringify(lote)));
-
-        return Buffer.from(JSON.stringify(lote));
+        //retorna o valor inserido no Buffer para quem invocou a função
+        return Buffer.from(JSON.stringify(carro));
     }
 
-    async tradeLote(stub, args) {
 
-        //recuperando o lote do ledger
+
+
+
+    async tradeCarro(stub, args) {
+
+        //recuperando asset Carro na rede
         var result = await stub.getState(args[0])
 
         if (!result || result.length === 0) {
-            throw new Error(`${args[0]} does not exist`);
+            throw new Error(`O carro da ${args[0]} não existe, logo não é possível alterar o seu dono`);
+        }
+        
+        //analisa uma string JSON, construindo o valor ou um objeto JavaScript descrito pela string, que no caso é o resultado da busca pelo asset. 
+        const carro = JSON.parse(result.toString());
+
+        //verifica se o nome do novo dono é o mesmo que o nome do dono
+        //antigo. Se for, significa que vc está tentando transferir o carro
+        //para o mesmo dono, o que não deve ser permitido
+        
+        if (carro.dono == args[1]) {
+            return "Não é possivel transferir carro para o mesmo dono"
         }
 
-        const lote = JSON.parse(result.toString());
+        //atualizando o campo "dono" do objeto carro para o nome do novo dono
+        carro.dono = args[1]
 
-        // try {
-
-        //     var bufferOriginal  = Buffer.from(JSON.parse(result).data);
-        //     var lote            = JSON.parse(bufferOriginal.toString('utf8'))       
-
-        // } catch (error) {
-
-        //     return "erro ao converter Buffer"
-
-        // }
-
-
-        if (lote.owner == args[1]) {
-            return "Não é possivel transferir o lote para o mesmo owner"
-        }
-
-        //atualizando o owner
-        lote.owner = args[1]
-
-        //atualizando o lote no ledger
-        await stub.putState(args[0], Buffer.from(JSON.stringify(lote)));
+        //atualizando o asset carro na blockchain
+        await stub.putState(args[0], Buffer.from(JSON.stringify(carro)));
 
 
         return "Sucesso"
@@ -93,7 +96,7 @@ let Chaincode = class {
 
     }
 
-    async queryLote(stub, args) {
+    async queryCarro(stub, args) {
 
         var result = await stub.getState(args[0])
 
@@ -101,13 +104,37 @@ let Chaincode = class {
 
     }
 
-    async getHistoryLote(stub, args) {
+    async queryTodosCarros(stub){
 
-        //retorna um iterator object
-        var history = await stub.getHistoryForKey(args[0])
-        var historyArray = Array.from(history)
+        var iterator = await stub.GetStateByRange("CX0", "CX999999")
+        
+        let allResults = [];
 
-        return historyArray
+        while(true){
+            let res = await iterator.next();
+
+            if (res.value && res.value.value.toString()) {
+                let jsonRes = {};
+                jsonRes.Key = res.value.key;
+
+                try {
+                  
+                    jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+
+                } catch (err) {
+                    console.log(err);
+                    jsonRes.Record = res.value.value.toString('utf8');
+                }
+                allResults.push(jsonRes);
+            }
+            if (res.done) {
+
+                await iterator.close();
+                return Buffer.from(JSON.stringify(allResults));
+
+            }
+        }
+
     }
 
 };

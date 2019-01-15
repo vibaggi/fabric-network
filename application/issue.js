@@ -59,12 +59,12 @@ async function main() {
     // Get addressability to commercial paper contract
     // console.log('Use org.papernet.commercialpaper smart contract.');
 
-    const contract = await network.getContract('chainv1');
+    const contract = await network.getContract('chainv2');
 
     // issue commercial paper
     console.log('Submit commercial paper issue transaction.');
 
-    const issueResponse = await contract.submitTransaction('createLote', 'CX8', 'Picanha',  'KG', '15', 'Fuzaro Farm');
+    const issueResponse = await contract.submitTransaction('createBola', 'CX8', 'Picanha',  'KG', '15', 'Fuzaro Farm');
 
     // process response
     console.log('Process issue transaction response.');

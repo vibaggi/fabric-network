@@ -64,7 +64,7 @@ async function main() {
     // issue commercial paper
     console.log('Querying transaction.');
 
-    const dataAsset = await contract.evaluateTransaction('queryLote', 'CX0');
+    const dataAsset = await contract.evaluateTransaction('queryLote', 'CX8');
 
     console.log(dataAsset.toString())
     // let bufferOriginal = Buffer.from(JSON.parse(dataAsset).data);

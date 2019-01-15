@@ -2,4 +2,11 @@
 /node_modules
 .DS_Store
 
+#application example
 /application/node_modules
+/application/wallet
+
+#rest-api
+
+/rest-api/wallet
+/rest-api/node_modules
