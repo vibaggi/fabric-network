@@ -104,40 +104,41 @@ let Chaincode = class {
 
     }
 
-    async queryTodosCarros(stub){
+    async queryTodosCarros(stub, args){
 
-        var iterator = await stub.GetStateByRange("CX0", "CX999999")
+        let startKey = 'CAR0';
+        let endKey = 'CAR999';
         
+        let iterator = await stub.getStateByRange(startKey, endKey);
+
         let allResults = [];
-
-        while(true){
-            let res = await iterator.next();
-
-            if (res.value && res.value.value.toString()) {
-                let jsonRes = {};
-                jsonRes.Key = res.value.key;
-
-                try {
-                  
-                    jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-
-                } catch (err) {
-                    console.log(err);
-                    jsonRes.Record = res.value.value.toString('utf8');
-                }
-                allResults.push(jsonRes);
+        while (true) {
+          let res = await iterator.next();
+    
+          if (res.value && res.value.value.toString()) {
+            let jsonRes = {};
+            console.log(res.value.value.toString('utf8'));
+    
+            jsonRes.Key = res.value.key;
+            try {
+              jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+            } catch (err) {
+              console.log(err);
+              jsonRes.Record = res.value.value.toString('utf8');
             }
-            if (res.done) {
-
-                await iterator.close();
-                return Buffer.from(JSON.stringify(allResults));
-
-            }
+            allResults.push(jsonRes);
+          }
+          if (res.done) {
+            console.log('end of data');
+            await iterator.close();
+            console.info(allResults);
+            return Buffer.from(JSON.stringify(allResults));
+          }
         }
-
     }
-
+    
 };
+
 
 shim.start(new Chaincode());
 
