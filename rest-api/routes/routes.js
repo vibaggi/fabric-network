@@ -72,6 +72,18 @@ router.get("/getAllCars/:userName", function(req, res){
     })
 })
 
+//Recupera todos os carros
+router.get("/getAllCarsByOwner/:userName", function(req, res){
+    if(req.params.userName == undefined) res.status(401).send("Não authorizado. Identifique-se! Passe userName no parametro")
+
+    controller.getAllCarsByOwner(req.params.userName).then(resp=>{
+        res.send(resp)
+    }).catch(error=>{
+        res.status(500).send(error)
+    })
+})
+
+
 router.get("/getHistory/:userName/:key", function(req, res){
     if(req.params.userName == undefined) res.status(401).send("Não authorizado. Identifique-se! Passe userName no parametro")
 

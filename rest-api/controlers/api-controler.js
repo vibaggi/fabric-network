@@ -30,7 +30,7 @@ function createCar(carro, username) {
 
         try {
             var contract = await networkService.getGatewayContract(username)
-            var resp = await contract.submitTransaction("createCar", carro.key, carro.dono, carro.placa, carro.anoDeFab, carro.cor, carro.nome)
+            var resp = await contract.submitTransaction("createCar", carro.key, "kalvin", carro.placa, carro.anoDeFab, carro.cor, carro.nome)
 
             resolve(JSON.parse(resp))
         } catch (error) {
@@ -109,12 +109,12 @@ function getAllCars(username) {
             carros.forEach(element => {
                 console.log(element)
                 let obj = {
-                    "id": element.Key ,
-                    "anoDeFab": element.Record.anoDeFab,
-                    "cor": element.Record.cor,
-                    "dono": element.Record.dono,
-                    "nome": element.Record.nome,
-                    "placa": element.Record.placa
+                    "key": element.Key ,
+                    "fabDate": element.Record.anoDeFab,
+                    "color": element.Record.cor,
+                    "owner": element.Record.dono,
+                    "name": element.Record.nome,
+                    "plate": element.Record.placa
                 }
                 result.push(obj)
                 
@@ -125,6 +125,19 @@ function getAllCars(username) {
         } catch (error) {
             reject(error)
         }
+    })
+}
+
+function getAllCarsByOwner(userName){
+    return new Promise(async (resolve, reject) => {
+        let allCars = await getAllCars(userName)
+
+        let car = allCars.filter(item => {
+            if(item.owner == userName) return item
+        })
+
+        resolve(car)
+
     })
 }
 
@@ -151,5 +164,6 @@ module.exports = {
     tradeCar: tradeCar,
     getCar: getCar,
     getAllCars: getAllCars,
-    getHistoryById: getHistoryById
+    getHistoryById: getHistoryById,
+    getAllCarsByOwner: getAllCarsByOwner
 }
