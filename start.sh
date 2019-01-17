@@ -4,6 +4,9 @@ CONTRACT_NAME=$1
 #Derrubar todas os dockers
 docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 
+#Limpar images do peer0
+docker rmi $(docker images |grep 'peer0')
+
 #Iniciando rede simples
 cd ./basic-network
 ./start.sh
