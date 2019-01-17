@@ -56,6 +56,15 @@ function createWallet(userName) {
 
 }
 
+function getAllWallets(){
+    return new Promise( async (resolve, reject)=>{
+        const list = await wallet.list()
+        console.log(list)
+        resolve(list)
+    })
+   
+}
+
 /**
  * Função para criar o adm do peer. Use somente uma vez.
  */
@@ -111,7 +120,7 @@ function getGatewayContract(userName){
 
             await gateway.connect(connectionProfile, connectionOptions);
             const network = await gateway.getNetwork('mychannel');
-            const contract = await network.getContract('chainv111');
+            const contract = await network.getContract('chaincode');
             
             // const response = await contract.submitTransaction.apply(this, args);
 
@@ -130,7 +139,8 @@ function getGatewayContract(userName){
 
 module.exports = {
     createWallet: createWallet,
-    getGatewayContract: getGatewayContract
+    getGatewayContract: getGatewayContract,
+    getAllWallets: getAllWallets
 
 }
 

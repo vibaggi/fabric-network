@@ -2,10 +2,12 @@
 var networkService = require('./../services/network-service')
 
 
-function createUser(username) {
+function createUser(userName) {
 
     return new Promise(async (resolve, reject) => {
-
+                                
+        var username = userName.toLowerCase()
+        console.log(username)
         networkService.createWallet(username).then(resp => resolve(resp)).catch(error => reject(error))
 
 
@@ -13,6 +15,33 @@ function createUser(username) {
 
 
 }
+
+function getAllUsersName(){
+    return new Promise(async (resolve, reject) =>{
+
+        var list = await networkService.getAllWallets()
+        resolve(list.map(user =>{ return user.label }))
+    })
+}
+function confirmUsersName(userName){
+    return new Promise(async (resolve, reject) =>{
+
+        var users = await getAllUsersName()
+        var confirmation = false
+        console.log(userName)
+        users.forEach(item => {
+            if(JSON.stringify(item)  === JSON.stringify(userName)){
+                confirmation = true
+            }
+        })
+
+        resolve(confirmation)
+        
+        
+       
+    })    
+}
+
 
 /**
  * Método prepara a requisicao do front-end para chamar a transação no fabric
@@ -30,7 +59,7 @@ function createCar(carro, username) {
 
         try {
             var contract = await networkService.getGatewayContract(username)
-            var resp = await contract.submitTransaction("createCar", carro.key, "kalvin", carro.plate, carro.fabDate, carro.color, carro.name)
+            var resp = await contract.submitTransaction("createCar", carro.urlImage, carro.plate, carro.fabDate, carro.color, carro.name)
 
             resolve(JSON.parse(resp))
         } catch (error) {
@@ -80,6 +109,11 @@ function tradeCar(carroKey, newOwner, username) {
 
 }
 
+/**
+ * Pesquisa um carro específico pela sua chave
+ * @param {string} carroKey 
+ * @param {string} username 
+ */
 function getCar(carroKey, username) {
 
     return new Promise(async (resolve, reject) => {
@@ -95,6 +129,10 @@ function getCar(carroKey, username) {
     })
 }
 
+/**
+ * Retorna a lista de todos os carros.
+ * @param {string} username o nome da wallet que será usada no rest-api
+ */
 function getAllCars(username) {
 
     return new Promise(async (resolve, reject) => {
@@ -128,6 +166,10 @@ function getAllCars(username) {
     })
 }
 
+/**
+ * 
+ * @param {*} userName 
+ */
 function getAllCarsByOwner(userName){
     return new Promise(async (resolve, reject) => {
         let allCars = await getAllCars(userName)
@@ -165,5 +207,7 @@ module.exports = {
     getCar: getCar,
     getAllCars: getAllCars,
     getHistoryById: getHistoryById,
-    getAllCarsByOwner: getAllCarsByOwner
+    getAllCarsByOwner: getAllCarsByOwner,
+    getAllUsersName: getAllUsersName,
+    confirmUsersName: confirmUsersName
 }

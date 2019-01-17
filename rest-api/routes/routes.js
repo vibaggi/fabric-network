@@ -14,6 +14,22 @@ router.post("/createUser", function(req, res){
     })
 })
 
+router.get("/getAllUsers", function(req, res){
+    controller.getAllUsersName().then(resp=>{
+        res.send(resp)
+    }).catch(error=>{
+        res.status(500).send(error)
+    })
+})
+
+router.get("/confirmUser/:userName", function(req, res){
+    controller.confirmUsersName(req.params.userName).then(resp=>{
+        res.send(resp)
+    }).catch(error=>{
+        res.status(500).send(error)
+    })
+})
+
 /**
  * Cria um carro. É necessário informar o usuário que irá realizar a ação
  */
