@@ -75,35 +75,35 @@ let Chaincode = class {
     async tradeCar(stub, args) {
 
         
-        //recuperando asset Carro na rede
+        //recuperando asset car na rede
         var result = await stub.getState(args[0])
 
         if (!result || result.length === 0) {
-            throw new Error(`O carro da ${args[0]} não existe, logo não é possível alterar o seu dono`);
+            throw new Error(`O car da ${args[0]} não existe, logo não é possível alterar o seu owner`);
         }
         
         //analisa uma string JSON, construindo o valor ou um objeto JavaScript descrito pela string, que no caso é o resultado da busca pelo asset. 
-        const carro = JSON.parse(result.toString());
+        const car = JSON.parse(result.toString());
 
-        //Vamos verificar se o certificado pertence ao dono da wallet!
+        //Vamos verificar se o certificado pertence ao owner da wallet!
         var certificateOwner = helper.getCertificateUser(stub)
-        console.log(carro.dono,"-", certificateOwner)
-        if(carro.dono.indexOf(certificateOwner) ) return Buffer.from("Transferência não permitida! Apenas carros do dono da wallet podem ser transferidos!")
+        console.log(car.owner,"-", certificateOwner)
+        if(car.owner.indexOf(certificateOwner) ) return Buffer.from("Transferência não permitida! Apenas cars do owner da wallet podem ser transferidos!")
         
 
-        //verifica se o nome do novo dono é o mesmo que o nome do dono
-        //antigo. Se for, significa que vc está tentando transferir o carro
-        //para o mesmo dono, o que não deve ser permitido
+        //verifica se o nome do novo owner é o mesmo que o nome do owner
+        //antigo. Se for, significa que vc está tentando transferir o car
+        //para o mesmo owner, o que não deve ser permitido
         
-        if (carro.dono == args[1]) {
-            return Buffer.from("Não é possivel transferir carro para o mesmo dono")
+        if (car.owner == args[1]) {
+            return Buffer.from("Não é possivel transferir car para o mesmo owner")
         }
 
-        //atualizando o campo "dono" do objeto carro para o nome do novo dono
-        carro.dono = args[1]
+        //atualizando o campo "owner" do objeto car para o nome do novo owner
+        car.owner = args[1]
 
-        //atualizando o asset carro na blockchain
-        await stub.putState(args[0], Buffer.from(JSON.stringify(carro)));
+        //atualizando o asset car na blockchain
+        await stub.putState(args[0], Buffer.from(JSON.stringify(car)));
 
 
         return Buffer.from("Sucesso")

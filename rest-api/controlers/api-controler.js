@@ -88,14 +88,14 @@ function createCar(carro, username) {
  * @param {*} newOwner 
  * @param {*} username é o identificador da wallet
  */
-function tradeCar(carroKey, newOwner, username) {
+function tradeCar(plate, newOwner, username) {
 
     return new Promise(async (resolve, reject) => {
 
         try {
 
             var contract = await networkService.getGatewayContract(username);
-            var resp = await contract.submitTransaction("tradeCar", carroKey, newOwner);
+            var resp = await contract.submitTransaction("tradeCar", plate, newOwner);
 
             resolve(resp)
 
@@ -147,12 +147,12 @@ function getAllCars(username) {
             carros.forEach(element => {
                 console.log(element)
                 let obj = {
-                    "key": element.Key ,
-                    "fabDate": element.Record.anoDeFab,
-                    "color": element.Record.cor,
-                    "owner": element.Record.dono,
-                    "name": element.Record.nome,
-                    "plate": element.Record.placa
+                    "fabDate": element.Record.fabDate,
+                    "color": element.Record.color,
+                    "owner": element.Record.owner,
+                    "name": element.Record.name,
+                    "plate": element.Record.plate,
+                    "urlImage": element.Record.urlImage
                 }
                 result.push(obj)
                 
