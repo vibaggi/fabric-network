@@ -30,7 +30,7 @@ function createCar(carro, username) {
 
         try {
             var contract = await networkService.getGatewayContract(username)
-            var resp = await contract.submitTransaction("createCar", carro.key, "kalvin", carro.placa, carro.anoDeFab, carro.cor, carro.nome)
+            var resp = await contract.submitTransaction("createCar", carro.key, "kalvin", carro.plate, carro.fabDate, carro.color, carro.name)
 
             resolve(JSON.parse(resp))
         } catch (error) {
