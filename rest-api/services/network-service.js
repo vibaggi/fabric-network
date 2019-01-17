@@ -111,7 +111,7 @@ function getGatewayContract(userName){
 
             await gateway.connect(connectionProfile, connectionOptions);
             const network = await gateway.getNetwork('mychannel');
-            const contract = await network.getContract('chainv13');
+            const contract = await network.getContract('chainv222');
             
             // const response = await contract.submitTransaction.apply(this, args);
 

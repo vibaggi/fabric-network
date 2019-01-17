@@ -21,7 +21,7 @@ const { FileSystemWallet, Gateway } = require('fabric-network');
 
 // A wallet stores a collection of identities for use
 //const wallet = new FileSystemWallet('../user/isabella/wallet');
-const wallet = new FileSystemWallet('./wallet');
+const wallet = new FileSystemWallet('../rest-api/wallet');
 
 // Main program function
 async function main() {
@@ -34,7 +34,7 @@ async function main() {
 
     // Specify userName for network access
     // const userName = 'isabella.issuer@magnetocorp.com';
-    const userName = 'user1';
+    const userName = 'Yuri';
 
     // Load connection profile; will be used to locate a gateway
     let connectionProfile = yaml.safeLoad(fs.readFileSync('../gateway/networkConnection.yaml', 'utf8'));
@@ -59,12 +59,12 @@ async function main() {
     // Get addressability to commercial paper contract
     // console.log('Use org.papernet.commercialpaper smart contract.');
 
-    const contract = await network.getContract('chainv1');
+    const contract = await network.getContract('chainv222');
 
     // issue commercial paper
     console.log('Querying transaction.');
 
-    const dataAsset = await contract.evaluateTransaction('queryLote', 'CX8');
+    const dataAsset = await contract.evaluateTransaction('queryHistory', 'CAR0');
 
     console.log(dataAsset.toString())
     // let bufferOriginal = Buffer.from(JSON.parse(dataAsset).data);

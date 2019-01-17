@@ -2,7 +2,7 @@
 var networkService = require('./../services/network-service')
 
 
-function criarUsuario(username) {
+function createUser(username) {
 
     return new Promise(async (resolve, reject) => {
 
@@ -19,7 +19,7 @@ function criarUsuario(username) {
  * @param {JSON} carro 
  * @param {*} username 
  */
-function criarCarro(carro, username) {
+function createCar(carro, username) {
 
     return new Promise(async (resolve, reject) => {
         //inicialmente passaremos a key, entretanto deverá haver um sistema automatica de gerar Key
@@ -30,7 +30,7 @@ function criarCarro(carro, username) {
 
         try {
             var contract = await networkService.getGatewayContract(username)
-            var resp = await contract.submitTransaction("createCarro", carro.key, carro.dono, carro.placa, carro.anoDeFab, carro.cor, carro.nome)
+            var resp = await contract.submitTransaction("createCar", carro.key, carro.dono, carro.placa, carro.anoDeFab, carro.cor, carro.nome)
 
             resolve(JSON.parse(resp))
         } catch (error) {
@@ -54,19 +54,19 @@ function criarCarro(carro, username) {
 }
 
 /**
- * Método para realizar a transação de tradeCarro no chaincode.
+ * Método para realizar a transação de tradeCar no chaincode.
  * @param {*} carroKey 
  * @param {*} newOwner 
  * @param {*} username é o identificador da wallet
  */
-function tradeCarro(carroKey, newOwner, username) {
+function tradeCar(carroKey, newOwner, username) {
 
     return new Promise(async (resolve, reject) => {
 
         try {
 
             var contract = await networkService.getGatewayContract(username);
-            var resp = await contract.submitTransaction("tradeCarro", carroKey, newOwner);
+            var resp = await contract.submitTransaction("tradeCar", carroKey, newOwner);
 
             resolve(resp)
 
@@ -80,13 +80,13 @@ function tradeCarro(carroKey, newOwner, username) {
 
 }
 
-function getCarro(carroKey, username) {
+function getCar(carroKey, username) {
 
     return new Promise(async (resolve, reject) => {
         try {
 
             var contract = await networkService.getGatewayContract(username);
-            var carro = await contract.evaluateTransaction("queryCarro", carroKey)
+            var carro = await contract.evaluateTransaction("queryCar", carroKey)
 
             resolve(JSON.parse(carro))
         } catch (error) {
@@ -95,13 +95,13 @@ function getCarro(carroKey, username) {
     })
 }
 
-function getCarros(username) {
+function getAllCars(username) {
 
     return new Promise(async (resolve, reject) => {
         try {
 
             var contract = await networkService.getGatewayContract(username);
-            var carros = await contract.evaluateTransaction("queryTodosCarros")
+            var carros = await contract.evaluateTransaction("queryAllCars")
             carros = JSON.parse(carros)
             console.log(carros)
             let result = []
@@ -128,10 +128,28 @@ function getCarros(username) {
     })
 }
 
+function getHistoryById(carId, username) {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            var contract = await networkService.getGatewayContract(username);
+            var carro = await contract.evaluateTransaction("queryHistory", carId)
+            console.log(carro)
+
+            resolve(JSON.parse(carro))
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
 module.exports = {
-    criarUsuario: criarUsuario,
-    criarCarro: criarCarro,
-    tradeCarro: tradeCarro,
-    getCarro: getCarro,
-    getCarros: getCarros
+    createUser: createUser,
+    createCar: createCar,
+    tradeCar: tradeCar,
+    getCar: getCar,
+    getAllCars: getAllCars,
+    getHistoryById: getHistoryById
 }

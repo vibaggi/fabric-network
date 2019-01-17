@@ -38,7 +38,7 @@ let Chaincode = class {
     }
 
     
-    async createCarro(stub, args) {
+    async createCar(stub, args) {
         //formatando dados
         var carro = {
             dono: args[1],
@@ -64,7 +64,7 @@ let Chaincode = class {
 
 
 
-    async tradeCarro(stub, args) {
+    async tradeCar(stub, args) {
 
         //recuperando asset Carro na rede
         var result = await stub.getState(args[0])
@@ -96,7 +96,7 @@ let Chaincode = class {
 
     }
 
-    async queryCarro(stub, args) {
+    async queryCar(stub, args) {
 
         var result = await stub.getState(args[0])
 
@@ -104,7 +104,7 @@ let Chaincode = class {
 
     }
 
-    async queryTodosCarros(stub, args){
+    async queryAllCars(stub, args){
 
         let startKey = 'CAR0';
         let endKey = 'CAR999';
@@ -135,6 +135,14 @@ let Chaincode = class {
             return Buffer.from(JSON.stringify(allResults));
           }
         }
+    }
+
+    async queryHistory(stub, args) {
+
+        var result = await stub.getHistoryForKey(args[0])
+
+        return result
+
     }
     
 };
