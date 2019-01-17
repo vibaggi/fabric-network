@@ -47,12 +47,13 @@ let Chaincode = class {
         console.log("%%%%%%%",certificateOwner)
 
         //formatando dados
-        var carro = {
-            dono: certificateOwner,
-            placa: args[2],
-            anoDeFab: args[3],
-            cor: args[4],
-            nome: args[5]
+        var car = {
+            owner: certificateOwner,
+            urlImage: args[0],
+            plate: args[1],
+            fabDate: args[2],
+            color: args[3],
+            name: args[4]
        }
         
        //insere o asset na Blockchain, mas precisa ser em formato Buffer, e 
@@ -61,10 +62,10 @@ let Chaincode = class {
        //que é como a Blockchain é estruturada
 
        //Atualizando no ledger
-        await stub.putState(args[0], Buffer.from(JSON.stringify(carro)));
+        await stub.putState(args[1], Buffer.from(JSON.stringify(car)));
 
         //retorna o valor inserido no Buffer para quem invocou a função
-        return Buffer.from(JSON.stringify(carro));
+        return Buffer.from(JSON.stringify(car));
     }
 
 
@@ -120,8 +121,8 @@ let Chaincode = class {
 
     async queryAllCars(stub, args){
 
-        let startKey = 'CAR0';
-        let endKey = 'CAR999';
+        let startKey = 'AAA-0000';
+        let endKey = 'ZZZ-9999';
         
         let iterator = await stub.getStateByRange(startKey, endKey);
 

@@ -1,6 +1,6 @@
 
-CONTRACT_NAME=$1
-
+#CONTRACT_NAME=$1 --> Caso queira voce mesmo digitar o nome do chain code
+CONTRACT_NAME="chaincode"
 #Derrubar todas os dockers
 docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 
@@ -23,5 +23,5 @@ echo "Iniciando instalação do chaincode"
 docker exec cliFabric peer chaincode install -n ${CONTRACT_NAME} -v 0 -p /opt/gopath/src/github.com -l node
 docker exec cliFabric peer chaincode instantiate -n ${CONTRACT_NAME} -v 0 -l node -c '{"Args":[""]}' -C mychannel -P "AND ('Org1MSP.member')"
 sleep 10
-docker exec cliFabric peer chaincode invoke -n ${CONTRACT_NAME} -c '{"function":"createCar","Args":["CAR0", "Vitor", "ABC-1234", "2018", "verde", "Ford Fiesta"]}' -C mychannel
+docker exec cliFabric peer chaincode invoke -n ${CONTRACT_NAME} -c '{"function":"createCar","Args":["htpp://", "ABC-1234", "2018", "verde", "Ford Fiesta"]}' -C mychannel
 
