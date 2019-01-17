@@ -10,10 +10,11 @@ class Helper {
       * Get stub and returns de name of certificate owner.
       * @param {*} stub 
       */
-     static async getCertificateUser(stub){
+     static getCertificateUser(stub){
         
         let _clientIdentity = new ClientIdentity(stub); 
         let _cert = _clientIdentity.getX509Certificate();
+        console.log(_cert.subject.commonName)
 
         if (_cert.subject.commonName){
             return _cert.subject.commonName;

@@ -6,6 +6,7 @@
 
 'use strict';
 const shim = require('fabric-shim');
+const helper = require('./helper-chaincode')
 
 let Chaincode = class {
 
@@ -37,11 +38,17 @@ let Chaincode = class {
         }
     }
 
+
+    
     
     async createCar(stub, args) {
+
+        var certificateOwner = helper.getCertificateUser(stub)
+        console.log("%%%%%%%",certificateOwner)
+
         //formatando dados
         var carro = {
-            dono: args[1],
+            dono: certificateOwner,
             placa: args[2],
             anoDeFab: args[3],
             cor: args[4],
