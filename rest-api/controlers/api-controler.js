@@ -97,7 +97,7 @@ function tradeCar(plate, newOwner, username) {
             var contract = await networkService.getGatewayContract(username);
             var resp = await contract.submitTransaction("tradeCar", plate, newOwner);
 
-            resolve(resp)
+            resolve({resp: resp})
 
         } catch (error) {
             reject(error)
