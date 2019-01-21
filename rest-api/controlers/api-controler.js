@@ -58,7 +58,10 @@ function createCar(carro, username) {
         //submetendo transação
 
         try {
-            var contract = await networkService.getGatewayContract(username)
+            if (username){
+                var contract = await networkService.getGatewayContract(username)
+            }
+            else throw Error ("Nenhum usuario informado")
             if (carro.urlImage && carro.plate && carro.fabDate && carro.color && carro.name) {
 
                 var resp = await contract.submitTransaction("createCar", carro.urlImage, carro.plate, carro.fabDate, carro.color, carro.name)
