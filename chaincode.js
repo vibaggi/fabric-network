@@ -43,6 +43,12 @@ let Chaincode = class {
     
     async createCar(stub, args) {
 
+        var result = await stub.getState(args[0])
+
+        if (result && result.length > 0) {
+            throw new Error(`O car da placa ${args[1]} JA EXISTE, logo não é possível criar um novo`);
+        }
+
         var certificateOwner = helper.getCertificateUser(stub)
         console.log("%%%%%%%",certificateOwner)
 
