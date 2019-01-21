@@ -8,7 +8,7 @@ function createUser(userName) {
                                 
         var username = userName.toLowerCase()
         console.log(username)
-        networkService.createWallet(username).then(resp => resolve(resp)).catch(error => reject(error))
+        networkService.createWallet(username).then(resp => resolve({resp: resp})).catch(error => reject(error))
 
 
     })
