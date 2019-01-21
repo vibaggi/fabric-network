@@ -5,10 +5,10 @@ var networkService = require('./../services/network-service')
 function createUser(userName) {
 
     return new Promise(async (resolve, reject) => {
-                                
+
         var username = userName.toLowerCase()
         console.log(username)
-        networkService.createWallet(username).then(resp => resolve({resp: resp})).catch(error => reject(error))
+        networkService.createWallet(username).then(resp => resolve({ resp: resp })).catch(error => reject(error))
 
 
     })
@@ -16,30 +16,30 @@ function createUser(userName) {
 
 }
 
-function getAllUsersName(){
-    return new Promise(async (resolve, reject) =>{
+function getAllUsersName() {
+    return new Promise(async (resolve, reject) => {
 
         var list = await networkService.getAllWallets()
-        resolve(list.map(user =>{ return user.label }))
+        resolve(list.map(user => { return user.label }))
     })
 }
-function confirmUsersName(userName){
-    return new Promise(async (resolve, reject) =>{
+function confirmUsersName(userName) {
+    return new Promise(async (resolve, reject) => {
 
         var users = await getAllUsersName()
         var confirmation = false
         console.log(userName)
         users.forEach(item => {
-            if(JSON.stringify(item)  === JSON.stringify(userName)){
+            if (JSON.stringify(item) === JSON.stringify(userName)) {
                 confirmation = true
             }
         })
 
         resolve(confirmation)
-        
-        
-       
-    })    
+
+
+
+    })
 }
 
 
@@ -59,9 +59,16 @@ function createCar(carro, username) {
 
         try {
             var contract = await networkService.getGatewayContract(username)
-            var resp = await contract.submitTransaction("createCar", carro.urlImage, carro.plate, carro.fabDate, carro.color, carro.name)
+            if (carro.urlImage && carro.plate && carro.fabDate && carro.color && carro.name) {
 
-            resolve(JSON.parse(resp))
+                var resp = await contract.submitTransaction("createCar", carro.urlImage, carro.plate, carro.fabDate, carro.color, carro.name)
+
+                resolve(JSON.parse(resp))
+            }
+            else {
+                throw Error ("Falta um dos argumentos")
+                
+            }
         } catch (error) {
             reject(error)
         }
@@ -97,7 +104,7 @@ function tradeCar(plate, newOwner, username) {
             var contract = await networkService.getGatewayContract(username);
             var resp = await contract.submitTransaction("tradeCar", plate, newOwner);
 
-            resolve({resp: resp})
+            resolve({ resp: resp })
 
         } catch (error) {
             reject(error)
@@ -155,9 +162,9 @@ function getAllCars(username) {
                     "urlImage": element.Record.urlImage
                 }
                 result.push(obj)
-                
+
             });
-    
+
 
             resolve(result)
         } catch (error) {
@@ -170,12 +177,12 @@ function getAllCars(username) {
  * 
  * @param {*} userName 
  */
-function getAllCarsByOwner(userName){
+function getAllCarsByOwner(userName) {
     return new Promise(async (resolve, reject) => {
         let allCars = await getAllCars(userName)
 
         let car = allCars.filter(item => {
-            if(item.owner == userName) return item
+            if (item.owner == userName) return item
         })
 
         resolve(car)
