@@ -36,7 +36,7 @@ router.get("/confirmUser/:userName", function(req, res){
 router.post("/createCar", function(req, res){
     //verificando body recebido
    if(req.body.car == undefined){
-    res.status(500).send("Objeto car não enviado pelo body")
+    res.status(500).send("Create car :: Erro :: Objeto car não enviado pelo body")
    }
 
    controller.createCar(req.body.car, req.body.userName).then(resp=>{
@@ -51,7 +51,7 @@ router.post("/createCar", function(req, res){
  */
 router.post("/tradeCar", function(req, res){
 
-    if(req.body.userName == undefined) res.status(401).send("Não authorizado. Identifique-se! Passe userName no parametro")
+    if(req.body.userName == undefined) res.status(401).send("Trade car :: Erro :: Não authorizado. Identifique-se! Passe userName no parametro")
 
     if(req.body.plate == undefined || req.body.newOwner == undefined){
         res.status(500).send("Informe os parametros key e newOwner")
