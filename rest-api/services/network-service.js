@@ -112,7 +112,7 @@ function getGatewayContract(userName){
 
             // Configura connectionOptions
             let connectionOptions = {
-                identity: userName,
+                identity: userName.toLowerCase(),
                 wallet: wallet,
                 discovery: { enabled:false, asLocalhost: true }
             };
