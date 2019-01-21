@@ -42,7 +42,7 @@ let Chaincode = class {
     
     
     async createCar(stub, args) {
-
+        
         var certificateOwner = helper.getCertificateUser(stub)
         console.log("%%%%%%%",certificateOwner)
 
