@@ -125,6 +125,47 @@ let Chaincode = class {
 
     }
 
+    async queryCarsByColor(stub, params) {
+
+        if (params.length != 1) {
+            throw new Error("1 argumento");
+        }
+
+        let carColor = params[0];
+        let query = {
+            selector: {
+                color: carColor
+            }
+        };
+
+        let iterator = await stub.getQueryResult(JSON.stringify(query));
+        
+        let allResults = [];
+        while (true) {
+          let res = await iterator.next();
+    
+          if (res.value && res.value.value.toString()) {
+            let jsonRes = {};
+            console.log(res.value.value.toString('utf8'));
+    
+            jsonRes.Key = res.value.key;
+            try {
+              jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+            } catch (err) {
+              console.log(err);
+              jsonRes.Record = res.value.value.toString('utf8');
+            }
+            allResults.push(jsonRes);
+          }
+          if (res.done) {
+            console.log('end of data');
+            await iterator.close();
+            console.info(allResults);
+            return Buffer.from(JSON.stringify(allResults));
+          }
+        }
+    }
+
     async queryAllCars(stub, args){
 
         let startKey = 'AAA-0000';
