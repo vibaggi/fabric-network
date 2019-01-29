@@ -10,3 +10,6 @@
 
 /rest-api/wallet
 /rest-api/node_modules
+
+#chaincode
+/chaincode/node_modules
