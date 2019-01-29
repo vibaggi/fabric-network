@@ -22,6 +22,18 @@ class Helper {
         return null;
      }
 
+     static getCertificateUserOrg(stub){
+
+        let _clientIdentity = new ClientIdentity(stub); 
+        let _cert = _clientIdentity.getX509Certificate();
+
+        if(_cert.subject.commonName && _cert.issuer.organizationName){
+            return _cert.subject.commonName+"@"+_cert.issuer.organizationName
+        }
+
+        return null
+     }
+
      static async getAllResults(iterator, isHistory) {
         console.log("Iniciando Extração")
         let allResults = [];
@@ -57,11 +69,13 @@ class Helper {
             }
             if (res.done) {
                 await iterator.close();
+                console.log(allResults)
                 console.log('End: getAllResults');
                 return allResults;
             }
         }
     }
+
 
 }
 

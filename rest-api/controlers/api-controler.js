@@ -75,18 +75,6 @@ function createCar(carro, username) {
         } catch (error) {
             reject(error)
         }
-
-        // networkService.getGatewayContract(username).then(contract => {
-
-        //     contract.submitTransaction("createCarro", carro.key, carro.dono, carro.placa, carro.anoDeFab, carro.cor, carro.nome).then(resp=>{
-        //         resolve("ok")
-        //     }).catch(error=>{
-        //         reject(error)
-        //     })
-
-        // }).catch(error => {
-        //     reject(error)
-        // })
     })
 
 
@@ -107,7 +95,7 @@ function tradeCar(plate, newOwner, username) {
             var contract = await networkService.getGatewayContract(username);
             var resp = await contract.submitTransaction("tradeCar", plate, newOwner);
 
-            resolve({ resp: resp })
+            resolve({ resp: resp.toString('utf8') })
 
         } catch (error) {
             reject(error)
@@ -143,13 +131,13 @@ function getCar(carroKey, username) {
  * @param {string} color 
  * @param {string} username 
  */
-function getCarsByColor(color, username) {
+function getCarsByColor(color, name, username) {
 
     return new Promise(async (resolve, reject) => {
         try {
 
             var contract = await networkService.getGatewayContract(username);
-            var carros = await contract.evaluateTransaction("queryCarsByColor", color)
+            var carros = await contract.evaluateTransaction("queryCarsByColor", color, name)
             carros = JSON.parse(carros)
             console.log(carros)
             let result = []
@@ -184,6 +172,7 @@ function getAllCars(username) {
 
             var contract = await networkService.getGatewayContract(username);
             var carros = await contract.evaluateTransaction("queryAllCars")
+            console.log(carros)
             carros = JSON.parse(carros)
             console.log(carros)
             let result = []

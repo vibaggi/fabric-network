@@ -49,7 +49,7 @@ let Chaincode = class {
             throw new Error(`O car da placa ${args[1]} JA EXISTE, logo não é possível criar um novo`);
         }
 
-        var certificateOwner = helper.getCertificateUser(stub)
+        var certificateOwner = helper.getCertificateUserOrg(stub)
         console.log("%%%%%%%",certificateOwner)
 
         //formatando dados
@@ -92,7 +92,7 @@ let Chaincode = class {
         const car = JSON.parse(result.toString());
 
         //Vamos verificar se o certificado pertence ao owner da wallet!
-        var certificateOwner = helper.getCertificateUser(stub)
+        var certificateOwner = helper.getCertificateUserOrg(stub)
         console.log(car.owner,"-", certificateOwner)
         if(car.owner.indexOf(certificateOwner) ) return Buffer.from("Transferência não permitida! Apenas cars do owner da wallet podem ser transferidos!")
         
@@ -131,39 +131,17 @@ let Chaincode = class {
             throw new Error("1 argumento");
         }
 
-        let carColor = params[0];
         let query = {
             selector: {
-                color: carColor
+                color: params[0],
+                name: params[1]
             }
         };
 
         let iterator = await stub.getQueryResult(JSON.stringify(query));
         
-        let allResults = [];
-        while (true) {
-          let res = await iterator.next();
+        return Buffer.from(JSON.stringify( await helper.getAllResults(iterator, false)))
     
-          if (res.value && res.value.value.toString()) {
-            let jsonRes = {};
-            console.log(res.value.value.toString('utf8'));
-    
-            jsonRes.Key = res.value.key;
-            try {
-              jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-            } catch (err) {
-              console.log(err);
-              jsonRes.Record = res.value.value.toString('utf8');
-            }
-            allResults.push(jsonRes);
-          }
-          if (res.done) {
-            console.log('end of data');
-            await iterator.close();
-            console.info(allResults);
-            return Buffer.from(JSON.stringify(allResults));
-          }
-        }
     }
 
     async queryAllCars(stub, args){
@@ -172,31 +150,14 @@ let Chaincode = class {
         let endKey = 'ZZZ-9999';
         
         let iterator = await stub.getStateByRange(startKey, endKey);
+        let result   = await helper.getAllResults(iterator, false);
 
-        let allResults = [];
-        while (true) {
-          let res = await iterator.next();
-    
-          if (res.value && res.value.value.toString()) {
-            let jsonRes = {};
-            console.log(res.value.value.toString('utf8'));
-    
-            jsonRes.Key = res.value.key;
-            try {
-              jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-            } catch (err) {
-              console.log(err);
-              jsonRes.Record = res.value.value.toString('utf8');
-            }
-            allResults.push(jsonRes);
-          }
-          if (res.done) {
-            console.log('end of data');
-            await iterator.close();
-            console.info(allResults);
-            return Buffer.from(JSON.stringify(allResults));
-          }
-        }
+        console.log(result)
+
+
+        return Buffer.from(JSON.stringify( result ))
+
+        
     }
 
     async queryHistory(stub, args) {

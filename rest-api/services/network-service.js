@@ -15,7 +15,7 @@ const yaml = require('js-yaml');
 
 
 
-createAdm() //Iniciar adm ao subir o servidor
+createIdentity() //Iniciar adm ao subir o servidor
 
 
 /**
@@ -68,7 +68,7 @@ function getAllWallets(){
 /**
  * Função para criar o adm do peer. Use somente uma vez.
  */
-async function createAdm(){
+async function createIdentity(){
 
     try{
 
