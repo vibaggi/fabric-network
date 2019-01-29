@@ -155,9 +155,9 @@ let Chaincode = class {
     async queryHistory(stub, args) {
 
         var result = await stub.getHistoryForKey(args[0])
+        let orderTrack = await helper.getAllResults(result, true);
 
-        return result
-
+        return Buffer.from(JSON.stringify(orderTrack))
     }
     
 };
