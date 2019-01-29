@@ -138,6 +138,40 @@ function getCar(carroKey, username) {
         }
     })
 }
+/**
+ * Pesquisa um carro específico pela sua chave
+ * @param {string} color 
+ * @param {string} username 
+ */
+function getCarsByColor(color, username) {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            var contract = await networkService.getGatewayContract(username);
+            var carros = await contract.evaluateTransaction("queryCarsByColor", color)
+            carros = JSON.parse(carros)
+            console.log(carros)
+            let result = []
+
+            carros.forEach(element => {
+                console.log(element)
+                let obj = {
+                    "fabDate": element.Record.fabDate,
+                    "color": element.Record.color,
+                    "owner": element.Record.owner,
+                    "name": element.Record.name,
+                    "plate": element.Record.plate,
+                    "urlImage": element.Record.urlImage
+                }
+                result.push(obj)
+            });
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 
 /**
  * Retorna a lista de todos os carros.
@@ -219,5 +253,6 @@ module.exports = {
     getHistoryById: getHistoryById,
     getAllCarsByOwner: getAllCarsByOwner,
     getAllUsersName: getAllUsersName,
-    confirmUsersName: confirmUsersName
+    confirmUsersName: confirmUsersName,
+    getCarsByColor: getCarsByColor
 }

@@ -77,6 +77,17 @@ router.get("/getCar/:userName/:key", function(req, res){
 
 })
 
+//Recupera carros pela Cor
+router.get("/getCarsByColor/:userName/:color", function(req, res){
+    if(req.params.userName == undefined) res.status(401).send("Não authorizado. Identifique-se! Passe userName no parametro")
+
+    controller.getCarsByColor(req.params.color, req.params.userName).then(resp=>{
+        res.send(resp)
+    }).catch(error=>{
+        res.status(500).send(error)
+    })
+})
+
 //Recupera todos os carros
 router.get("/getAllCars/:userName", function(req, res){
     if(req.params.userName == undefined) res.status(401).send("Não authorizado. Identifique-se! Passe userName no parametro")
